@@ -1,0 +1,25 @@
+[package]
+name = "trait-aliases"
+version = "0.1.0"
+authors = ["nekitdev <nekit@nekit.dev>"]
+edition = "2024"
+rust-version = "1.92"
+description = "Trait aliases."
+documentation = "https://docs.rs/trait-aliases"
+readme = "README.md"
+repository = "https://github.com/nekitdev/trait-aliases"
+license = "MIT"
+keywords = ["trait", "alias", "macro"]
+
+[lib]
+proc-macro = true
+
+[dependencies.proc-macro2]
+version = "1.0.103"
+
+[dependencies.quote]
+version = "1.0.42"
+
+[dependencies.syn]
+version = "2.0.111"
+features = ["full"]
