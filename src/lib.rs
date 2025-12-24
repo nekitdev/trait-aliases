@@ -125,19 +125,19 @@
 //! use serde::{Deserialize, Serialize};
 //!
 //! /// Represents base identifier bounds.
-//! trait BaseId: Copy + Ord + Hash {}
+//! pub trait BaseId: Copy + Ord + Hash {}
 //!
 //! /// Blanket implementation of [`BaseId`] for all types satisfying its bounds.
 //! impl<__T> BaseId for __T where __T: Copy + Ord + Hash + ?Sized {}
 //!
 //! /// Represents types that can be serialized and deserialized.
-//! trait Serializable: Serialize + for<'de> Deserialize<'de> {}
+//! pub trait Serializable: Serialize + for<'de> Deserialize<'de> {}
 //!
 //! /// Blanket implementation of [`Serializable`] for all types satisfying its bounds.
 //! impl<__T> Serializable for __T where __T: Serialize + for<'de> Deserialize<'de> + ?Sized {}
 //!
 //! /// Represents identifier types.
-//! trait Id: BaseId + Serializable {}
+//! pub trait Id: BaseId + Serializable {}
 //!
 //! /// Blanket implementation of [`Id`] for all types satisfying its bounds.
 //! impl<__T> Id for __T where __T: BaseId + Serializable + ?Sized {}
@@ -149,13 +149,13 @@
 //! use core::hash::Hash;
 //!
 //! /// Represents base identifier bounds.
-//! trait BaseId: Copy + Ord + Hash {}
+//! pub trait BaseId: Copy + Ord + Hash {}
 //!
 //! /// Blanket implementation of [`BaseId`] for all types satisfying its bounds.
 //! impl<__T> BaseId for __T where __T: Copy + Ord + Hash + ?Sized {}
 //!
 //! /// Represents identifier types.
-//! trait Id: BaseId {}
+//! pub trait Id: BaseId {}
 //!
 //! /// Blanket implementation of [`Id`] for all types satisfying its bounds.
 //! impl<__T> Id for __T where __T: BaseId + ?Sized {}
