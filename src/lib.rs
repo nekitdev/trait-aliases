@@ -21,7 +21,7 @@
 //!
 //! ```
 //! /// Working in multi-threaded `async` contexts often requires these.
-//! trait SSS: Send + Sync + 'static {}
+//! pub trait SSS: Send + Sync + 'static {}
 //!
 //! /// Blanket implementation of [`SSS`] for all types satisfying its bounds.
 //! impl<__T> SSS for __T where __T: Send + Sync + 'static + ?Sized {}
