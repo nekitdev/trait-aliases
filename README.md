@@ -32,6 +32,41 @@ Alternatively, you can add it directly from the source:
 git = "https://github.com/nekitdev/trait-aliases.git"
 ```
 
+## Example
+
+> Ever felt tired of writing `T: Send + Sync + 'static` over and over when working with `async`
+> in multi-threaded scenarios?
+
+Simply define an alias without blanket implementation boilerplate!
+
+```rust
+use trait_aliases::trait_aliases;
+
+trait_aliases! {
+    /// Working in multi-threaded `async` contexts often requires these.
+    pub trait SSS = Send + Sync + 'static;
+}
+```
+
+This crate will generate the `SSS` trait with the provided bounds, and implement it for any type
+satisfying them:
+
+```rust
+/// Working in multi-threaded `async` contexts often requires these.
+pub trait SSS: Send + Sync + 'static {}
+
+/// Blanket implementation of [`SSS`] for all types satisfying its bounds.
+impl<__T> SSS for __T where __T: Send + Sync + 'static + ?Sized {}
+```
+
+## Note
+
+Please *never* use `__T` in your generic parameters, as it is reserved for the
+blanket implementation.
+
+Failing to do so will result in collisions at best, and hard-to-debug errors,
+migraines or even spontaneous combustion at worst.
+
 ## Documentation
 
 You can find the documentation [here][Documentation].
