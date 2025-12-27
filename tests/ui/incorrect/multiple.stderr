@@ -1,0 +1,17 @@
+error: identifier `__T` is reserved for blanket implementations
+ --> tests/ui/incorrect/multiple.rs:7:23
+  |
+7 |     trait Convertible<__T> = From<__T> + Into<__T>;
+  |                       ^^^
+
+error: identifier `__T` is reserved for blanket implementations
+ --> tests/ui/incorrect/multiple.rs:7:35
+  |
+7 |     trait Convertible<__T> = From<__T> + Into<__T>;
+  |                                   ^^^
+
+error: identifier `__T` is reserved for blanket implementations
+ --> tests/ui/incorrect/multiple.rs:7:47
+  |
+7 |     trait Convertible<__T> = From<__T> + Into<__T>;
+  |                                               ^^^

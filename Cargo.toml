@@ -26,3 +26,6 @@ features = ["full", "visit"]
 
 [dev-dependencies.serde]
 version = "1.0.228"
+
+[dev-dependencies.trybuild]
+version = "1.0.114"

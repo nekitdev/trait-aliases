@@ -1,0 +1,5 @@
+error: identifier `__T` is reserved for blanket implementations
+ --> tests/ui/incorrect/reserved.rs:7:11
+  |
+7 |     trait __T = Sized;
+  |           ^^^
