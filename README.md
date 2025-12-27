@@ -61,11 +61,22 @@ impl<__T> SSS for __T where __T: Send + Sync + 'static + ?Sized {}
 
 ## Note
 
-Please *never* use `__T` in your generic parameters, as it is reserved for the
-blanket implementation.
+The `__T` identifier is essential to correct code generation, therefore *any* occurrences
+of the reserved identifier will result in compilation errors:
 
-Failing to do so will result in collisions at best, and hard-to-debug errors,
-migraines or even spontaneous combustion at worst.
+```rust
+use trait_aliases::trait_aliases;
+
+trait_aliases! {
+    trait __T = Sized;
+}
+```
+
+Fails with the following error:
+
+```text
+identifier `__T` is reserved for blanket implementations
+```
 
 ## Documentation
 
