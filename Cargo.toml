@@ -22,4 +22,7 @@ version = "1.0.42"
 
 [dependencies.syn]
 version = "2.0.111"
-features = ["full"]
+features = ["full", "visit"]
+
+[dev-dependencies.serde]
+version = "1.0.228"

@@ -119,7 +119,7 @@
 //!
 //! Which will generate the following code with `serde` enabled:
 //!
-//! ```ignore
+//! ```
 //! use core::hash::Hash;
 //!
 //! use serde::{Deserialize, Serialize};
@@ -163,17 +163,29 @@
 //!
 //! # Note
 //!
-//! Please *never* use `__T` in your generic parameters, as it is reserved for the
-//! blanket implementation.
+//! The `__T` identifier is essential to correct code generation, therefore *any* occurrences
+//! of the reserved identifier will result in compilation errors:
 //!
-//! Failing to do so will result in collisions at best, and hard-to-debug errors,
-//! migraines or even spontaneous combustion at worst.
+//! ```compile_fail
+//! use trait_aliases::trait_aliases;
+//!
+//! trait_aliases! {
+//!     trait __T = Sized;
+//! }
+//! ```
+//!
+//! Fails with the following error:
+//!
+//! ```text
+//! identifier `__T` is reserved for blanket implementations
+//! ```
 
 use proc_macro::TokenStream;
 use syn::parse_macro_input;
 
 mod generate;
 mod parse;
+mod special;
 
 /// Defines trait aliases with blanket implementations.
 ///
