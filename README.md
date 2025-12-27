@@ -22,7 +22,7 @@ Or by directly specifying it in the configuration like so:
 
 ```toml
 [dependencies]
-trait-aliases = "0.1.0"
+trait-aliases = "0.2.0"
 ```
 
 Alternatively, you can add it directly from the source:
