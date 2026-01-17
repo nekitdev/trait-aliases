@@ -2,6 +2,21 @@
 
 <!-- changelogging: start -->
 
+## [0.3.0](https://github.com/nekitdev/trait-aliases/tree/v0.3.0) (2026-01-17)
+
+### Features
+
+- Introduced `#[trait_alias]` attribute that allows additional customization.
+
+  See the [docs](https://docs.rs/trait-aliases/latest/trait_aliases/attr.trait_alias.html)
+  for more information.
+
+### Internal
+
+- Internals were refactored to be more modular.
+
+- All internal documentation was removed.
+
 ## [0.2.0](https://github.com/nekitdev/trait-aliases/tree/v0.2.0) (2025-12-27)
 
 ### Changes
