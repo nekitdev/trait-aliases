@@ -1,0 +1,11 @@
+error: duplicate identifier argument `U`, already set to `T`
+ --> tests/ui/incorrect/repeated.rs:4:22
+  |
+4 |     #[trait_alias(T, U, V)]
+  |                      ^
+
+error: duplicate identifier argument `V`, already set to `T`
+ --> tests/ui/incorrect/repeated.rs:4:25
+  |
+4 |     #[trait_alias(T, U, V)]
+  |                         ^

@@ -3,8 +3,10 @@
 use trait_aliases::trait_aliases;
 
 trait_aliases! {
+    #[trait_alias(I)]
     trait GenericIteratorItemSend<T: Send> = Iterator<Item = T>;
 
+    #[trait_alias(I)]
     trait IteratorItemSend = Iterator<Item: Send>;
 }
 

@@ -1,6 +1,6 @@
 [package]
 name = "trait-aliases"
-version = "0.2.0"
+version = "0.3.0"
 authors = ["nekitdev <nekit@nekit.dev>"]
 edition = "2024"
 rust-version = "1.92"
@@ -15,13 +15,13 @@ keywords = ["trait", "alias", "macro"]
 proc-macro = true
 
 [dependencies.proc-macro2]
-version = "1.0.104"
+version = "1.0.105"
 
 [dependencies.quote]
-version = "1.0.42"
+version = "1.0.43"
 
 [dependencies.syn]
-version = "2.0.111"
+version = "2.0.114"
 features = ["full", "visit"]
 
 [dev-dependencies.serde]

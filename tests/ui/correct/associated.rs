@@ -3,6 +3,7 @@
 use trait_aliases::trait_aliases;
 
 trait_aliases! {
+    #[trait_alias(I)]
     trait Bytes = Iterator<Item = u8>;
 }
 

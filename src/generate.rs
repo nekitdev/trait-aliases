@@ -1,68 +1,110 @@
-//! Code generation functionality.
-
 use proc_macro2::TokenStream;
 use quote::quote;
-use syn::{Attribute, GenericParam, Ident, ItemTraitAlias, WherePredicate};
+use syn::{Attribute, GenericParam, ItemTraitAlias, Result, WherePredicate, visit::Visit};
 
 use crate::{
+    arguments::Arguments,
+    blanket::{Checker, predicate_type, type_parameter},
+    context::Context,
+    input::{TraitAlias, TraitAliasInput, TraitAliasesInput},
+    name::Name,
     parse::TraitAliases,
-    special::{predicate_type, type_parameter},
 };
 
-/// Generates trait aliases for the input.
-///
-/// This function calls [`trait_alias`] for each item in [`TraitAliases`] and combines the outputs.
-pub fn trait_aliases(input: &TraitAliases) -> TokenStream {
-    let aliases = input.items.iter().map(trait_alias);
-
-    quote! {
-        #(#aliases)*
-    }
-}
-
-/// The literal `doc` identifier.
-pub const DOC: &str = stringify!(doc);
-
-/// Checks whether the given attribute is [`DOC`].
 pub fn is_doc_attribute(attribute: &Attribute) -> bool {
-    attribute.meta.path().is_ident(DOC)
+    Name::DOC.match_path(attribute.path())
 }
 
-/// Returns the blanket implementation documentation.
-pub fn blanket_impl_doc(name: &Ident) -> String {
-    format!("Blanket implementation of [`{name}`] for all types satisfying its bounds.")
+pub fn split_attributes<'a, A: IntoIterator<Item = &'a Attribute>>(
+    attributes: A,
+) -> (Vec<&'a Attribute>, Vec<&'a Attribute>) {
+    attributes
+        .into_iter()
+        .partition(|attribute| is_doc_attribute(attribute))
 }
 
-/// Generates the trait definition and blanket implementation for the given trait alias.
-pub fn trait_alias(alias: &ItemTraitAlias) -> TokenStream {
-    let (docs, attributes): (Vec<_>, Vec<_>) =
-        alias.attrs.iter().cloned().partition(is_doc_attribute);
+pub fn extract_trait_aliases(aliases: &mut TraitAliases) -> Result<TokenStream> {
+    let input = TraitAliasesInput::extract(aliases)?;
 
-    let visibility = &alias.vis;
-    let name = &alias.ident;
+    trait_aliases(input)
+}
 
-    let generics = &alias.generics;
+pub fn trait_aliases(input: TraitAliasesInput<'_>) -> Result<TokenStream> {
+    let context = Context::new();
 
-    let bounds = &alias.bounds;
+    let output = trait_aliases_with(&context, input);
+
+    context.check()?;
+
+    Ok(output)
+}
+
+pub fn trait_aliases_with(context: &Context, input: TraitAliasesInput<'_>) -> TokenStream {
+    let generated = input
+        .inputs
+        .into_iter()
+        .map(|input| trait_alias_with(context, input));
+
+    let output = quote! {
+        #(#generated)*
+    };
+
+    output
+}
+
+pub fn trait_alias(input: TraitAliasInput<'_>) -> Result<TokenStream> {
+    let context = Context::new();
+
+    let output = trait_alias_with(&context, input);
+
+    context.check()?;
+
+    Ok(output)
+}
+
+pub fn trait_alias_with(context: &Context, input: TraitAliasInput<'_>) -> TokenStream {
+    let TraitAlias { arguments, item } = TraitAlias::from_input(input);
+
+    let Arguments {
+        blanket_docs,
+        blanket_type,
+    } = arguments;
+
+    let ItemTraitAlias {
+        attrs,
+        vis: visibility,
+        ident: name,
+        generics,
+        bounds,
+        .. // skip over tokens
+    } = item;
+
+    let (docs, attributes) = split_attributes(attrs);
+
+    // check the trait alias for occurrences of the `blanket_type` identifier
+    let mut checker = Checker::new(&blanket_type, context);
+
+    checker.visit_item_trait_alias(item);
 
     // `generics` are used for the trait definition, so skip `impl_generics`
     let (_, type_generics, where_clause) = generics.split_for_impl();
 
+    // clone generics in order to add the blanket type parameter to them
     let mut derived = generics.clone();
 
-    // add `__T` parameter
-    derived.params.push(GenericParam::Type(type_parameter()));
+    let blanket = type_parameter(blanket_type.clone());
 
-    // and restrict it with `bounds`, adding `?Sized`
+    derived.params.push(GenericParam::Type(blanket));
+
+    let predicate = predicate_type(blanket_type.clone(), bounds.clone());
+
     derived
         .make_where_clause()
         .predicates
-        .push(WherePredicate::Type(predicate_type(bounds.clone())));
+        .push(WherePredicate::Type(predicate));
 
     // `type_generics` are reused, so skip them here
     let (impl_generics, _, where_derived) = derived.split_for_impl();
-
-    let blanket_impl = blanket_impl_doc(name);
 
     // output trait definition, then its blanket implementation
     quote! {
@@ -70,8 +112,8 @@ pub fn trait_alias(alias: &ItemTraitAlias) -> TokenStream {
         #(#attributes)*
         #visibility trait #name #generics: #bounds #where_clause {}
 
-        #[doc = #blanket_impl]
+        #(#[doc = #blanket_docs])*
         #(#attributes)*
-        impl #impl_generics #name #type_generics for __T #where_derived {}
+        impl #impl_generics #name #type_generics for #blanket_type #where_derived {}
     }
 }

@@ -3,6 +3,7 @@
 use trait_aliases::trait_aliases;
 
 trait_aliases! {
+    #[trait_alias(T)]
     trait SSS = Send + Sync + 'static;
 }
 

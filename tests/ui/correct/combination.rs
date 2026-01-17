@@ -3,10 +3,13 @@
 use trait_aliases::trait_aliases;
 
 trait_aliases! {
+    #[trait_alias(T)]
     trait ThreadSafe = Send + Sync;
 
+    #[trait_alias(I)]
     trait Bytes = Iterator<Item = u8>;
 
+    #[trait_alias(B)]
     trait ThreadSafeBytes = ThreadSafe + Bytes;
 }
 

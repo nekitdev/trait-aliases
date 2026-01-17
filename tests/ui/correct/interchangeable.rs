@@ -3,7 +3,10 @@
 use trait_aliases::trait_aliases;
 
 trait_aliases! {
+    #[trait_alias(A)]
     trait ThreadSafeA = Send + Sync;
+
+    #[trait_alias(B)]
     trait ThreadSafeB = Send + Sync;
 }
 

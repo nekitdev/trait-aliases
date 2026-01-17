@@ -3,7 +3,7 @@
 //! In case said bound is not added, the generated implementation of `Alias` would look like
 //!
 //! ```
-//! impl<__T> Alias for __T where __T: Test {}
+//! impl<T> Alias for T where T: Test {}
 //! ```
 //!
 //! and, while `Test` is implemented for `[T]`, `Alias` would be not, causing compilation error.
@@ -19,6 +19,7 @@ impl<T> Test for [T] {
 }
 
 trait_aliases! {
+    #[trait_alias(T)]
     trait Alias = Test;
 }
 

@@ -5,10 +5,13 @@ use trait_aliases::trait_aliases;
 const COUNT: usize = 4;
 
 trait_aliases! {
+    #[trait_alias(A)]
     trait IntoArray<T, const N: usize> = Into<[T; N]>;
 
+    #[trait_alias(B)]
     trait IntoBytes<const N: usize> = IntoArray<u8, N>;
 
+    #[trait_alias(C)]
     trait IntoCount = IntoBytes<COUNT>;
 }
 

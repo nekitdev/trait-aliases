@@ -5,6 +5,7 @@ use core::fmt::{Debug, Display};
 use trait_aliases::trait_aliases;
 
 trait_aliases! {
+    #[trait_alias(T)]
     trait DD = where Self: Debug + Display;
 }
 

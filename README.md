@@ -22,7 +22,7 @@ Or by directly specifying it in the configuration like so:
 
 ```toml
 [dependencies]
-trait-aliases = "0.2.0"
+trait-aliases = "0.3.0"
 ```
 
 Alternatively, you can add it directly from the source:
@@ -59,23 +59,33 @@ pub trait SSS: Send + Sync + 'static {}
 impl<__T> SSS for __T where __T: Send + Sync + 'static + ?Sized {}
 ```
 
-## Note
+## Attribute
 
-The `__T` identifier is essential to correct code generation, therefore *any* occurrences
-of the reserved identifier will result in compilation errors:
+The expansion can be customized via applying the `#[trait_alias]` attribute:
 
 ```rust
 use trait_aliases::trait_aliases;
 
 trait_aliases! {
-    trait __T = Sized;
+    /// Working in multi-threaded `async` contexts often requires these.
+    #[trait_alias(
+        T,
+        doc = "Implemented for any type that is [`Send`], [`Sync`] and `'static`",
+        doc = "(meaning it does not contain non-static lifetimes)."
+    )]
+    pub trait SSS = Send + Sync + 'static;
 }
 ```
 
-Fails with the following error:
+Expands to the following:
 
-```text
-identifier `__T` is reserved for blanket implementations
+```rust
+/// Working in multi-threaded `async` contexts often requires these.
+pub trait SSS: Send + Sync + 'static {}
+
+/// Implemented for any type that is [`Send`], [`Sync`] and `'static`
+/// (meaning it does not contain non-static lifetimes).
+impl<T> SSS for T where T: Send + Sync + 'static + ?Sized {}
 ```
 
 ## Documentation
