@@ -88,6 +88,50 @@ pub trait SSS: Send + Sync + 'static {}
 impl<T> SSS for T where T: Send + Sync + 'static + ?Sized {}
 ```
 
+## Note
+
+The blanket identifier is essential to correct code generation, therefore *any* occurrences
+of the selected identifier will result in compilation errors.
+
+When the identifier is supplied to `#[trait_alias]`, for instance:
+
+```rust
+use trait_aliases::trait_aliases;
+
+trait_aliases! {
+    #[trait_alias(T)]
+    trait Convertible<T> = From<T> + Into<T>;
+}
+```
+
+will cause compilation to fail with several errors like:
+
+```text
+identifier `T` is reserved for blanket implementations
+```
+
+pointing to every occurrence of `T` within the trait alias definition.
+
+Otherwise, the default `__T` is used, therefore examples like:
+
+```rust
+use trait_aliases::trait_aliases;
+
+trait_aliases! {
+    trait __T = Sized;
+}
+```
+
+fail with the following error:
+
+```text
+error: identifier `__T` is reserved for blanket implementations
+ --> src/main.rs
+  |
+  |     trait __T = Sized;
+  |           ^^^
+```
+
 ## Documentation
 
 You can find the documentation [here][Documentation].
